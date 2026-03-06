@@ -24,8 +24,8 @@ def parse_arguments():
     parser.add_argument("-lr","--learning_rate",type=float,default=1e-3)
     parser.add_argument("-wd","--weight_decay",type=float,default=0.0)
 
-    parser.add_argument("-nhl","--num_layers",type=int,default=4)
-    parser.add_argument("-sz","--hidden_size",type=int,nargs="+",default=[128,128,128])
+    parser.add_argument("-nhl","--num_layers",type=int,default=3)
+    parser.add_argument("-sz","--hidden_size",type=int,nargs="+",default=[128,64,32])
     parser.add_argument("-a","--activation",default="relu",choices=["sigmoid","tanh","relu"])
     parser.add_argument("-w_i","--weight_init",default="xavier",choices=["random","xavier"])
 
