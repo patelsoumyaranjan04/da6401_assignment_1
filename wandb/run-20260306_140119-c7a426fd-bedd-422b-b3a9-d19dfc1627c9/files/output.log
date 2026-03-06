@@ -1,0 +1,7 @@
+Training...
+Epoch 1/3 | loss 1.8348 | train_acc 0.4721 | val_acc 0.4693
+Epoch 2/3 | loss 1.4185 | train_acc 0.5435 | val_acc 0.5410
+Epoch 3/3 | loss 1.2322 | train_acc 0.6023 | val_acc 0.5952
+
+Test |acc 0.6039 |f1 0.5504 |precision 0.5582 |recall 0.5951
+Model saved: C:\Users\samwe\OneDrive\Desktop\da6401_assignment_1\src\best_model.npy

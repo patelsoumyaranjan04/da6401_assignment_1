@@ -1,0 +1,30 @@
+Training...
+Epoch 1/20 | loss 0.2618 | train_acc 0.9662 | val_acc 0.9562
+Epoch 2/20 | loss 0.1111 | train_acc 0.9804 | val_acc 0.9687
+Epoch 3/20 | loss 0.0793 | train_acc 0.9701 | val_acc 0.9560
+Epoch 4/20 | loss 0.0622 | train_acc 0.9870 | val_acc 0.9755
+Epoch 5/20 | loss 0.0493 | train_acc 0.9867 | val_acc 0.9728
+Epoch 6/20 | loss 0.0409 | train_acc 0.9913 | val_acc 0.9753
+Epoch 7/20 | loss 0.0354 | train_acc 0.9937 | val_acc 0.9765
+Epoch 8/20 | loss 0.0292 | train_acc 0.9921 | val_acc 0.9735
+Epoch 9/20 | loss 0.0265 | train_acc 0.9946 | val_acc 0.9778
+Epoch 10/20 | loss 0.0231 | train_acc 0.9957 | val_acc 0.9763
+Epoch 11/20 | loss 0.0192 | train_acc 0.9951 | val_acc 0.9767
+Epoch 12/20 | loss 0.0182 | train_acc 0.9942 | val_acc 0.9708
+Epoch 13/20 | loss 0.0160 | train_acc 0.9973 | val_acc 0.9780
+Epoch 14/20 | loss 0.0146 | train_acc 0.9964 | val_acc 0.9775
+Epoch 15/20 | loss 0.0143 | train_acc 0.9976 | val_acc 0.9750
+Epoch 16/20 | loss 0.0131 | train_acc 0.9956 | val_acc 0.9743
+Epoch 17/20 | loss 0.0131 | train_acc 0.9975 | val_acc 0.9773
+Epoch 18/20 | loss 0.0113 | train_acc 0.9957 | val_acc 0.9757
+Epoch 19/20 | loss 0.0112 | train_acc 0.9967 | val_acc 0.9740
+Epoch 20/20 | loss 0.0108 | train_acc 0.9981 | val_acc 0.9765
+
+Test |acc 0.9773 |f1 0.9771 |precision 0.9771 |recall 0.9772
+Traceback (most recent call last):
+  File "C:\Users\samwe\OneDrive\Desktop\da6401_assignment_1\src\train.py", line 132, in <module>
+    main()
+  File "C:\Users\samwe\OneDrive\Desktop\da6401_assignment_1\src\train.py", line 125, in main
+    print("Model saved:",path)
+                         ^^^^
+NameError: name 'path' is not defined
