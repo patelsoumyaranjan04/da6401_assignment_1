@@ -157,9 +157,9 @@ class NeuralNetwork:
         metrics = {
             "loss": loss,
             "accuracy": accuracy_score(y, preds),
-            "f1": f1_score(y, preds, average="macro", zero_division=0),
-            "precision": precision_score(y, preds, average="macro", zero_division=0),
-            "recall": recall_score(y, preds, average="macro", zero_division=0),
+           "f1": f1_score(y, preds, average="weighted", zero_division=0),
+            "precision": precision_score(y, preds, average="weighted", zero_division=0),
+            "recall": recall_score(y, preds, average="weighted", zero_division=0),
             "logits": logits
         }
 
@@ -177,16 +177,13 @@ class NeuralNetwork:
 
     def set_weights(self, weights):
         num_layers = len([k for k in weights if k.startswith("W")])
-
-        # Use W.shape[0] instead of in_features (Layer class doesn't have in_features attr)
         if num_layers != len(self.layers) or weights["W0"].shape[0] != self.layers[0].W.shape[0]:
             self.layers = []
             for i in range(num_layers):
                 W = weights[f"W{i}"]
-                in_dim = W.shape[0]
-                out_dim = W.shape[1]
                 act = self.args.activation if i < num_layers - 1 else None
-                self.layers.append(Layer(in_dim, out_dim, act, self.args.weight_init))
+                self.layers.append(Layer(W.shape[0], W.shape[1], act, self.args.weight_init))
+            self.optimizer.init_state(self.layers)  # ← ADD THIS LINE
 
         for i, layer in enumerate(self.layers):
             layer.W = weights[f"W{i}"].copy()
