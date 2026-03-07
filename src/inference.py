@@ -1,60 +1,124 @@
+
 import argparse
-import os
-import sys
 import numpy as np
 
-sys.path.insert(0, os.path.dirname(__file__))
-
 from ann.neural_network import NeuralNetwork
-from utils.data_loader import load_data
+from utils.data_loader import load_dataset
+
+from sklearn.metrics import f1_score, precision_score, recall_score
 
 
 def parse_arguments():
+  
 
-    parser=argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Run inference on test set")
 
-    parser.add_argument("-d","--dataset",default="mnist",choices=["mnist","fashion_mnist"])
-    parser.add_argument("-nhl","--num_layers",type=int,default=4)
-    parser.add_argument("-sz","--hidden_size",type=int,nargs="+",default=[128,128,128])
-    parser.add_argument("-a","--activation",default="relu")
-    parser.add_argument("-l","--loss",default="cross_entropy")
-    parser.add_argument("-o","--optimizer",default="rmsprop")
-    parser.add_argument("-lr","--learning_rate",type=float,default=1e-3)
-    parser.add_argument("-wd","--weight_decay",type=float,default=0.0)
-    parser.add_argument("-w_i","--weight_init",default="xavier")
+    parser.add_argument("--model_path", type=str,
+                        default="best_model.npy",
+                        help="Path to saved model weights")
 
-    parser.add_argument("--model_path",default="best_model.npy")
+    parser.add_argument("-d", "--dataset", type=str,
+                        default="mnist",
+                        choices=["mnist", "fashion_mnist"],
+                        help="Dataset to use")
+
+    parser.add_argument("-nhl", "--num_layers", type=int, default=3,
+                        help="Number of hidden layers")
+
+    parser.add_argument("-sz", "--hidden_size", type=int,
+                        nargs="+", default=[128, 128, 64],
+                        help="Number of neurons in each hidden layer")
+
+    parser.add_argument("-a", "--activation", type=str,
+                        default="relu",
+                        choices=["sigmoid", "tanh", "relu"],
+                        help="Activation function")
+
+    parser.add_argument("-l", "--loss", type=str,
+                        default="cross_entropy",
+                        choices=["mse", "mean_squared_error", "cross_entropy"],
+                        help="Loss function")
+
+    parser.add_argument("-o", "--optimizer", type=str,
+                        default="rmsprop",
+                        choices=["sgd", "momentum", "nag", "rmsprop"],
+                        help="Optimizer")
+
+    parser.add_argument("-lr", "--learning_rate", type=float,
+                        default=0.001,
+                        help="Learning rate")
+
+    parser.add_argument("-wd", "--weight_decay", type=float,
+                        default=0.0001,
+                        help="Weight decay")
+
+    parser.add_argument("-b", "--batch_size", type=int,
+                        default=32,
+                        help="Batch size")
+
+    parser.add_argument("-e", "--epochs", type=int,
+                        default=30,
+                        help="Number of epochs")
+
+    parser.add_argument("-w_i", "--weight_init", type=str,
+                        default="xavier",
+                        choices=["random", "xavier"],
+                        help="Weight initialization method")
 
     return parser.parse_args()
 
 
-def load_weights(path):
-    return np.load(path,allow_pickle=True).item()
+def load_model(model_path):
+
+    data = np.load(model_path, allow_pickle=True).item()
+    return data
+
+
+def evaluate_model(model, X_test, y_test):
+
+    logits = model.forward(X_test)
+
+    preds = np.argmax(logits, axis=1)
+    targets = np.argmax(y_test, axis=1)
+
+    acc = np.mean(preds == targets)
+    f1 = f1_score(targets, preds, average="weighted", zero_division=0)
+    precision = precision_score(targets, preds, average="weighted", zero_division=0)
+    recall = recall_score(targets, preds, average="weighted", zero_division=0)
+
+    return {
+        'logits': logits,
+        'accuracy': acc,
+        'f1': f1,
+        'precision': precision,
+        'recall': recall
+    }
 
 
 def main():
+ 
+    args = parse_arguments()
 
-    args=parse_arguments()
+    print("Loading dataset...")
+    _, _, X_test, y_test = load_dataset(args.dataset)
 
-    _,_,_,_,X_test,y_test=load_data(args.dataset)
+    print("Initializing model...")
+    model = NeuralNetwork(args)
 
-    model=NeuralNetwork(args)
-
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    model_path = os.path.join(BASE_DIR, args.model_path)
-
-    weights = load_weights(model_path)
-
+    print(f"Loading weights from {args.model_path}...")
+    weights = load_model(args.model_path)
     model.set_weights(weights)
 
-    results=model.evaluate(X_test,y_test)
+    print("Running evaluation...")
+    results = evaluate_model(model, X_test, y_test)
 
-    print(f"Accuracy  : {results['accuracy']:.4f}")
-    print(f"F1-Score  : {results['f1']:.4f}")
-    print(f"Precision : {results['precision']:.4f}")
-    print(f"Recall    : {results['recall']:.4f}")
-    print(f"Loss      : {results['loss']:.4f}")
+    print(f"Accuracy: {results['accuracy']:.4f}")
+    print(f"F1 Score: {results['f1']:.4f}")
+    print(f"Precision: {results['precision']:.4f}")
+    print(f"Recall: {results['recall']:.4f}")
+
+    return results
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
