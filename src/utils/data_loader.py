@@ -1,32 +1,34 @@
 import numpy as np
-from sklearn.model_selection import train_test_split
 from keras.datasets import mnist, fashion_mnist
 
 
-def _prepare(X):
-
-    X = X.reshape(len(X), -1)
-    X = X.astype(np.float32) / 255.0
-
-    return X
-
-
-def load_data(name, val_split=0.1, seed=42):
-
-    if name == "fashion_mnist":
+def load_dataset(dataset_name='mnist'):
+  
+    if dataset_name == 'mnist':
+        (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    elif dataset_name == 'fashion_mnist':
         (X_train, y_train), (X_test, y_test) = fashion_mnist.load_data()
     else:
-        (X_train, y_train), (X_test, y_test) = mnist.load_data()
+        raise ValueError(f"Unknown dataset: {dataset_name}")
+    
+    # Flatten images
+    X_train = X_train.reshape(X_train.shape[0], -1).astype('float32')
+    X_test = X_test.reshape(X_test.shape[0], -1).astype('float32')
+    
+    # Normalize to [0, 1]
+    X_train = X_train / 255.0
+    X_test = X_test / 255.0
+    
+    # One-hot encode labels
+    y_train = one_hot_encode(y_train, num_classes=10)
+    y_test = one_hot_encode(y_test, num_classes=10)
+    
+    return X_train, y_train, X_test, y_test
 
-    X_train = _prepare(X_train)
-    X_test = _prepare(X_test)
 
-    X_train, X_val, y_train, y_val = train_test_split(
-        X_train,
-        y_train,
-        test_size=val_split,
-        random_state=seed,
-        stratify=y_train
-    )
+def one_hot_encode(y, num_classes=10):
 
-    return X_train, y_train, X_val, y_val, X_test, y_test
+    n = y.shape[0]
+    one_hot = np.zeros((n, num_classes))
+    one_hot[np.arange(n), y] = 1
+    return one_hot
