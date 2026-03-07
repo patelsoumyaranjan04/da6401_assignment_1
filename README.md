@@ -251,8 +251,8 @@ Performance on MNIST:
 
 
 
-Soumya Ranjan Patel
-DA6401 – Deep Learning
+
+
 
 
 
