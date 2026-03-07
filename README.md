@@ -62,7 +62,6 @@ The following datasets are supported:
 * **MNIST**
 * **Fashion-MNIST**
 
-Datasets are loaded using `keras.datasets`.
 
 Images are normalized and flattened before being passed to the network.
 
@@ -150,6 +149,12 @@ python train.py \
 | `-w_p`              | W&B Project                        |
 | `--model_save_path` | Weight initialization              |
 ---
+
+- The `forward()` method returns logits without softmax at the output
+- The `backward()` method computes gradients from the last layer to the first and returns `(grad_W, grad_b)`
+- All the layers have access to `self.grad_W` and `self.grad_b` after each call to `backward()`
+- The model weights are saved in the `.npy` format by the use of the `get_weights()` and `set_weights()` methods
+- The best model is chosen based on the **validation F1-score**
 
 ## Inference
 
@@ -246,3 +251,4 @@ Performance on MNIST:
 
 Soumya Ranjan Patel
 DA6401 – Deep Learning
+
