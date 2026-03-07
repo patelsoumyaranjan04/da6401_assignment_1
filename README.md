@@ -149,7 +149,7 @@ python train.py \
 | `-l`                | Loss function                      |
 | `-w_i`              | Weight initialization              |
 | `-w_p`              | W&B Project                        |
-| `--model_save_path` | Weight initialization              |
+| `--model_save_path` | Model Saved Directory              |
 ---
 
 - The `forward()` method returns logits without softmax at the output
@@ -253,6 +253,7 @@ Performance on MNIST:
 
 Soumya Ranjan Patel
 DA6401 – Deep Learning
+
 
 
 
