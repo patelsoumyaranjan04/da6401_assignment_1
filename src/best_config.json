@@ -1,6 +1,6 @@
 {
   "dataset": "mnist",
-  "epochs": 9,
+  "epochs": 10,
   "batch_size": 64,
   "learning_rate": 0.1,
   "weight_decay": 0.0001,
@@ -14,8 +14,11 @@
   "activation": "relu",
   "loss": "cross_entropy",
   "weight_init": "xavier",
-  "model_save_path": "best_model.npy",
-  "config_save_path": "best_config.json",
-  "test_f1": 0.9760033052024977,
-  "test_accuracy": 0.976
+  "wandb_project": "da6401_assignment_1_my-src",
+  "model_save_path": "C:\\Users\\samwe\\OneDrive\\Desktop\\da6401_assignment_1_my\\src\\best_model.npy",
+  "config_save_path": "C:\\Users\\samwe\\OneDrive\\Desktop\\da6401_assignment_1_my\\src\\best_config.json",
+  "no_wandb": true,
+  "experiment": null,
+  "test_f1": 0.9771280291430494,
+  "test_accuracy": 0.9771
 }

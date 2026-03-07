@@ -39,23 +39,28 @@ def parse_arguments():
     parser.add_argument("-w_i", "--weight_init", type=str, default="xavier",
                         choices=["random", "xavier"])
 
-    #parser.add_argument("-w_p","--wandb_project",default="da6401_assignment_1_my-src")
+    parser.add_argument("-w_p","--wandb_project",default="da6401_assignment_1_my-src")
 
     parser.add_argument("--model_save_path", type=str,
                         default="best_model.npy")
 
     parser.add_argument("--config_save_path", type=str,
                         default="best_config.json")
-    #parser.add_argument("--no_wandb",action="store_true")
+    parser.add_argument("--no_wandb",action="store_true")
 
-    #parser.add_argument("--experiment", type=str,required=False,
-                    #help="Name of experiment for W&B logging")
+    parser.add_argument("--experiment", type=str,required=False,
+                    help="Name of experiment for W&B logging")
     return parser.parse_args()
 
 
 def main():
 
     args = parse_arguments()
+    SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+
+   
+    args.model_save_path = os.path.join(SRC_DIR, args.model_save_path)
+    args.config_save_path = os.path.join(SRC_DIR, args.config_save_path)
     # parsed_hidden = []
 
     # for h in args.hidden_size:
@@ -66,45 +71,45 @@ def main():
 
     # args.hidden_size = parsed_hidden
     # args.num_layers = len(args.hidden_size)
-    # if not args.no_wandb:
-    #     wandb.init(
-    #         project=args.wandb_project,
-    #         config=vars(args),
-    #         name=args.experiment,
-    #     tags=[args.dataset] if args.experiment is None else [args.experiment, args.dataset]
-    #     )
+    if not args.no_wandb:
+        wandb.init(
+            project=args.wandb_project,
+            config=vars(args),
+            name=args.experiment,
+        tags=[args.dataset] if args.experiment is None else [args.experiment, args.dataset]
+        )
 
-    #     config = wandb.config
+        config = wandb.config
 
-    #     args.dataset = config.dataset
-    #     args.epochs = config.epochs
-    #     args.batch_size = config.batch_size
-    #     args.learning_rate = config.learning_rate
-    #     args.optimizer = config.optimizer
-    #     args.activation = config.activation
-    #     args.hidden_size = config.hidden_size
-    #     args.num_layers = config.num_layers
-    #     args.weight_decay = config.weight_decay
-    #     args.weight_init = config.weight_init
+        args.dataset = config.dataset
+        args.epochs = config.epochs
+        args.batch_size = config.batch_size
+        args.learning_rate = config.learning_rate
+        args.optimizer = config.optimizer
+        args.activation = config.activation
+        args.hidden_size = config.hidden_size
+        args.num_layers = config.num_layers
+        args.weight_decay = config.weight_decay
+        args.weight_init = config.weight_init
 
 
 
     # Load dataset
     X_train, y_train, X_test, y_test = load_dataset(args.dataset)
-    # if not args.no_wandb and args.experiment == "data_exploration":
+    if not args.no_wandb and args.experiment == "data_exploration":
 
-    #     table = wandb.Table(columns=["image", "label"])
+        table = wandb.Table(columns=["image", "label"])
 
-    #     raw_images = X_train.reshape(-1, 28, 28)
-    #     raw_labels = np.argmax(y_train, axis=1)
+        raw_images = X_train.reshape(-1, 28, 28)
+        raw_labels = np.argmax(y_train, axis=1)
 
-    #     for label in range(10):
-    #         indices = np.where(raw_labels == label)[0][:5]
+        for label in range(10):
+            indices = np.where(raw_labels == label)[0][:5]
 
-    #         for idx in indices:
-    #             table.add_data(wandb.Image(raw_images[idx]), label)
+            for idx in indices:
+                table.add_data(wandb.Image(raw_images[idx]), label)
 
-    #     wandb.log({"data_exploration_samples": table})
+        wandb.log({"data_exploration_samples": table})
 
     X=X_train
     y=y_train
@@ -171,15 +176,15 @@ def main():
             f"Val F1: {val_f1:.4f}"
         )
 
-    #     if not args.no_wandb:
-    #         wandb.log({
-    #     "epoch": epoch + 1,
-    #     "train_loss": train_loss,
-    #     "train_accuracy": train_acc,
-    #     "val_loss": val_loss,
-    #     "val_accuracy": val_acc,
-    #     "val_f1": val_f1
-    # })
+        if not args.no_wandb:
+            wandb.log({
+        "epoch": epoch + 1,
+        "train_loss": train_loss,
+        "train_accuracy": train_acc,
+        "val_loss": val_loss,
+        "val_accuracy": val_acc,
+        "val_f1": val_f1
+    })
 
 
     final_weights = model.get_weights()
@@ -204,13 +209,13 @@ def main():
     print("Test Precision:", test_precision)
     print("Test Recall:", test_recall)
 
-    # if not args.no_wandb:
-    #     wandb.log({
-    #         "test_accuracy": test_acc,
-    #         "test_f1": test_f1,
-    #         "test_precision": test_precision,
-    #         "test_recall":test_recall
-    #     })
+    if not args.no_wandb:
+        wandb.log({
+            "test_accuracy": test_acc,
+            "test_f1": test_f1,
+            "test_precision": test_precision,
+            "test_recall":test_recall
+        })
 
     # Save model
     np.save(args.model_save_path, final_weights)
@@ -226,8 +231,8 @@ def main():
 
     print("Training complete!")
 
-    # if not args.no_wandb:
-    #     wandb.finish()
+    if not args.no_wandb:
+        wandb.finish()
 
 
 if __name__ == "__main__":

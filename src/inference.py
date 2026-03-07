@@ -1,6 +1,7 @@
 
 import argparse
 import numpy as np
+import os
 
 from ann.neural_network import NeuralNetwork
 from utils.data_loader import load_dataset
@@ -13,8 +14,10 @@ def parse_arguments():
 
     parser = argparse.ArgumentParser(description="Run inference on test set")
 
+    SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+
     parser.add_argument("--model_path", type=str,
-                        default="best_model.npy",
+                        default=os.path.join(SRC_DIR, "best_model.npy"),
                         help="Path to saved model weights")
 
     parser.add_argument("-d", "--dataset", type=str,
